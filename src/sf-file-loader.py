@@ -1,5 +1,5 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import col
+from pyspark.sql.functions import col, to_timestamp
 from pyspark.sql.types import *
 
 # Programmatic way to define a schema
@@ -51,3 +51,18 @@ few_fire_df = (fire_df
                .select("IncidentNumber", "AvailableDtTm", "CallType")
                .where(col("CallType") != "Medical Incident"))
 few_fire_df.show(5, truncate=False)
+
+new_fire_df = fire_df.withColumnRenamed("Delay", "ResponseDelayedinMins")
+fire_ts_df = (new_fire_df
+              .withColumn("IncidentDate", to_timestamp(col("CallDate"), "MM/dd/yyyy"))
+              .drop("CallDate")
+              .withColumn("OnWatchDate", to_timestamp(col("WatchDate"), "MM/dd/yyyy"))
+              .drop("WatchDate")
+              .withColumn("AvailableDtTS", to_timestamp(col("AvailableDtTm"),
+                                                        "MM/dd/yyyy hh:mm:ss a"))
+              .drop("AvailableDtTm"))
+
+# Select the converted columns
+(fire_ts_df
+ .select("IncidentDate", "OnWatchDate", "AvailableDtTS")
+ .show(5, False))
