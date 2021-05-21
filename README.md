@@ -10,3 +10,7 @@
 
 - 1. `anyenv update ; pyenv install 3.9.4 ; pyenv virtualenv 3.9.4 ore_lspark ; pyenv local ore_lspark ; pip install --upgrade pip`
 - 1. `pip install -r packages.txt` 
+
+# Ref.
+
+- https://github.com/databricks/LearningSparkV2
